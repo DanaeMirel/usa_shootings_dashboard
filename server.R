@@ -70,12 +70,22 @@ text_about <- "The FBI and leading criminologists defined a mass shooting as
 text_learn_more <- "Visit https://www.motherjones.com/politics/2012/12/mass-shootings-mother-jones-full-data/ 
                     to obtein the whole dataset and aditional information"
 
+theme_mass_shoot <- function() {
+  theme_bw() + 
+    theme(legend.position = 'none',
+      text = element_text(family = "Bookman", color = "gray25"),
+      plot.subtitle = element_text(size = 12),
+      plot.caption = element_text(color = "gray30"),
+      plot.margin = unit(c(1, 1, 1, 1), units = "mm")
+    )
+}
 
 shinyServer(function(input, output) {
   
   #---# about #---#
   observeEvent(input$show_about,{
-    showModal(modalDialog(text_about, title = 'About')) })
+    showModal(modalDialog(text_about, title = 'About')) 
+    })
   
   #---# global filter #---#
   rval_mass_shootings <- reactive({
@@ -149,8 +159,7 @@ shinyServer(function(input, output) {
       ggplot(aes(x=site, y=freq, fill=site)) +
       geom_bar(stat="identity") +
       scale_fill_viridis(option = "B", discrete = TRUE) +
-      theme_bw() + 
-      theme(legend.position = 'none') +
+      theme_mass_shoot() + 
       coord_flip() +
       labs(x=' ', y ='%', caption = 'Mother Jones - Mass Shootings Database, 1982 - 2020')
     
@@ -170,8 +179,7 @@ shinyServer(function(input, output) {
       scale_fill_viridis(option = "B", discrete = TRUE) +
       coord_flip() +
       labs(x=' ', y ='%', caption = 'Mother Jones - Mass Shootings Database, 1982 - 2020') +
-      theme_bw() +
-      theme(legend.position = 'none')
+      theme_mass_shoot()
     
   })
   
@@ -215,10 +223,8 @@ shinyServer(function(input, output) {
       geom_col() +
       scale_fill_viridis(option = "B", discrete = TRUE) +
       coord_flip() +
-      xlab(" ") + 
-      ylab("%") + 
-      theme_bw() +
-      theme(legend.position = 'none')
+      labs(x = " ", y = "%") + 
+      theme_mass_shoot()
     
   })
   
@@ -249,10 +255,8 @@ shinyServer(function(input, output) {
       geom_col() +
       scale_fill_viridis(option = "B", discrete = TRUE) +
       coord_flip() + 
-      xlab(" ") +
-      ylab(" % ") + 
-      theme_bw() +
-      theme(legend.position = 'none')
+      labs(x="", y="%") + 
+      theme_mass_shoot()
     
     
   })
@@ -274,9 +278,8 @@ shinyServer(function(input, output) {
       geom_histogram() +
       scale_fill_viridis(option = "B", discrete = TRUE) +
       theme_bw() +
-      xlab("Age of the shooter") + 
-      ylab("counts")
-    
+      labs(x="Age of the shooter", y="counts")
+
   })
   
   output$median_age_info <- renderValueBox({ 
@@ -311,11 +314,9 @@ shinyServer(function(input, output) {
       geom_col() +
       scale_fill_viridis(option = "B", discrete = TRUE) +
       coord_flip() +
-      xlab(" ") +
-      ylab(" % ") +
-      theme_bw() +
-      theme(legend.position = 'none')
-    
+      labs(x="", y="%") +
+      theme_mass_shoot()
+
   })
   
   output$legal_weapon_info <- renderValueBox({
@@ -351,10 +352,8 @@ shinyServer(function(input, output) {
       geom_col()  +
       scale_fill_viridis(option = "B", discrete = TRUE) +
       coord_flip() +
-      xlab(" ") +
-      ylab("%") +
-      theme_bw() +
-      theme(legend.position = 'none')
+      labs(x=" ", y="%") +
+      theme_mass_shoot()
     
   })
   
@@ -393,8 +392,7 @@ shinyServer(function(input, output) {
       coord_flip() +
       xlab(" ") +
       ylab("%") +
-      theme_bw() +
-      theme(legend.position = 'none')
+      theme_mass_shoot()
     
   })
   
