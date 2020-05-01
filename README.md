@@ -1,4 +1,7 @@
-![view](https://gitlab.com/DanaeMartinez/usa_shootings_dashboard/-/blob/master/shooter.png)
+![view](geographic_loc.png)
 
+![view](loc.png)
+
+![view](shooter.png)
 
 Visit [shiny io](https://danaemirelmartinez.shinyapps.io/usa_shootings_dashboard/)
