@@ -152,7 +152,7 @@ shinyServer(function(input, output) {
       theme_bw() + 
       theme(legend.position = 'none') +
       coord_flip() +
-      xlab(" ") + ylab(" % ") 
+      labs(x=' ', y ='%', caption = 'Mother Jones - Mass Shootings Database, 1982 - 2020')
     
   })
   
@@ -169,8 +169,7 @@ shinyServer(function(input, output) {
       geom_bar(stat = 'identity') +
       scale_fill_viridis(option = "B", discrete = TRUE) +
       coord_flip() +
-      xlab(" ") +
-      ylab(" % ") +
+      labs(x=' ', y ='%', caption = 'Mother Jones - Mass Shootings Database, 1982 - 2020') +
       theme_bw() +
       theme(legend.position = 'none')
     
@@ -186,8 +185,7 @@ shinyServer(function(input, output) {
       geom_segment( aes(x=year, xend=year, y=0, yend=n), color="black") +
       geom_point( color="red", size=1.5) +
       ylim(0,13) +
-      xlab("year") +
-      ylab("Number of shootings by year") +
+      labs(x ='year', y ='Number of shootings by year', caption = 'Mother Jones - Mass Shootings Database, 1982 - 2020') +
       theme(axis.text.x = element_text(angle=90)) +
       theme_bw()  
     
