@@ -58,7 +58,7 @@ mass_shootings <- shootings %>%
   ) %>% 
   select('date','location', 'state', 'site', 'fatalities', 'injured', 'total_victims', 
          'handgun', 'rifle', 'revolver', 'shotgun', 'weapon_type', 'age_of_shooter',
-         'mental_health_issues', 'legal_weapons', 'race', 'gender', 'latitude', 'longitude')
+         'mental_health_issues', 'legal_weapons', 'race', 'gender', 'latitude', 'longitude', 'summary')
 
 #----------------#
 #---# HEADER #---#

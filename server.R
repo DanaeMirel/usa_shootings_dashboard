@@ -57,7 +57,7 @@ mass_shootings <- shootings %>%
   ) %>% 
   select('date','location', 'state', 'site', 'fatalities', 'injured', 'total_victims', 
          'handgun', 'rifle', 'revolver', 'shotgun', 'weapon_type', 'age_of_shooter',
-         'mental_health_issues', 'legal_weapons', 'race', 'gender', 'latitude', 'longitude')
+         'mental_health_issues', 'legal_weapons', 'race', 'gender', 'latitude', 'longitude', 'summary')
 
 # about the data 
 text_about <- "The FBI and leading criminologists defined a mass shooting as 
@@ -138,7 +138,7 @@ shinyServer(function(input, output) {
       addTiles() %>% 
       addCircleMarkers(
         # Add parameters popup and radius and map them to the summary and fatalities columns
-        popup = ~ summary,
+        popup  = ~ summary,
         radius = ~ fatalities,
         fillColor = 'red', color = 'red', weight = 1
       )
