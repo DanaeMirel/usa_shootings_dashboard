@@ -132,15 +132,17 @@ shinyServer(function(input, output) {
   output$map <- leaflet::renderLeaflet({
     
     rval_mass_shootings() %>%
-      leaflet() %>% 
+      leaflet(options = leafletOptions(minZoom = 2, maxZoom = 10)) %>% 
       addTiles() %>%
-      setView( -98.58, 39.82, zoom = 5) %>% 
+      setView( -98.58, 39.82, zoom = 4.25) %>% 
       addTiles() %>% 
       addCircleMarkers(
         # Add parameters popup and radius and map them to the summary and fatalities columns
         popup  = ~ summary,
         radius = ~ fatalities,
-        fillColor = 'red', color = 'red', weight = 1
+        fillColor = 'red'
+        , color = 'red'
+        , weight = 1
       )
   })
   
