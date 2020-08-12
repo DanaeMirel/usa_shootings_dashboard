@@ -1,0 +1,13 @@
+name: usa_shootings_dashboard
+title:
+username:
+account: danaemirelmartinez
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 2220383
+bundleId: 3507172
+url: https://danaemirelmartinez.shinyapps.io/usa_shootings_dashboard/
+when: 1597249895.07557
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: avatar.jpg|geographic_loc.png|loc.png|README.md|shooter.png
