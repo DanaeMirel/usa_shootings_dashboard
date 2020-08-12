@@ -1,4 +1,3 @@
-
 # Mass Shootings in the USA Shiny Dashboard 
 
 This dashboard provides descriptive analysis about mass shooting in the United States since 1982. 
@@ -14,7 +13,7 @@ The dashboard is organized in five tabs that are described below.
 This tab provides a general insight about the location and number of victims regarding mass shootings having taken place between the selected dates. 
 The map has been build using the [`leaet` package](http://rstudio.github.io/leaflet/).
 
-![view](geographic_loc.png)
+![view](images\geographic_loc.png)
 
 ## Tab 2 : Location 
 
