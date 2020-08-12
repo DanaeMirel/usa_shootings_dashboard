@@ -1,65 +1,68 @@
 
-library(shinydashboard)
-library(dplyr)
-library(lubridate)
-library(leaflet)
-library(magrittr)
-library(forcats)
-library(ggplot2)
-library(tidyr)
-library(shinyWidgets)
-library(DT)
-library(viridis)
-library(plotly)
-library(stringr)
+#---------------------------------------------#
+#---# Mass Shootings in the United States #---#
+#---------------------------------------------#
 
-# original data 
+library("shinydashboard")
+library("dplyr")
+library("lubridate")
+library("leaflet")
+library("magrittr")
+library("forcats")
+library("ggplot2")
+library("tidyr")
+library("shinyWidgets")
+library("DT")
+library("viridis")
+library("plotly")
+library("stringr")
+
+#---# original data #---#
 shootings <- read.csv('mass-shootingsupdate.csv')
 
-# clean the data 
+#---# clean the data #---#
 mass_shootings <- shootings %>%  
   mutate(date = mdy(date)
-         ,site = fct_recode(location.1,
-                            "Workplace" = "\nWorkplace",
-                            "Other" = "Other\n")
-         ,race = gsub(" ", "", race, fixed = TRUE) # eliminate blank spaces 
-         ,race = fct_recode(race,
-                            "unclear" = "-",
-                            "Black" = "black", 
-                            "White" = "white")
-         ,state = word(location, -1)
-         ,mental_health_issues = gsub(" ", "", prior_signs_mental_health_issues, fixed = TRUE) # eliminate blank spaces 
-         ,mental_health_issues = fct_recode(mental_health_issues,
-                                            "Unclear" = "-",
-                                            "Yes" ="yes", 
-                                            "TBD" = "Unknown")
-         ,legal_weapons = word(weapons_obtained_legally, 1)
-         ,legal_weapons =  fct_recode(legal_weapons, 
-                                      "Yes" = "\nYes",
-                                      "Unknown" = "-",
-                                      "Unknown" = "TBD",
-                                      "Unknown" = "Kelley")
-         ,gender = fct_recode(gender, 
-                              "M" = "Male", 
-                              "F" = "Female",
-                              "Other" = "-",
-                              "M & F" = "Male & Female")
-         ,age_of_shooter = as.numeric(age_of_shooter)
-         ,age_of_shooter = ifelse(age_of_shooter < 10, age_of_shooter + 10, age_of_shooter )
-         ,weapon_type = fct_recode(weapon_type, 
-                                   "handgun" = "Handgun", 
-                                   "shotgun" = "Shotgun", 
-                                   "rifle" = "Rifle")
-         ,handgun = ifelse(str_detect(weapon_type, "handgun"), 1, 0)
-         ,rifle = ifelse(str_detect(weapon_type, "rifle"), 1, 0)
-         ,revolver = ifelse(str_detect(weapon_type, "revolver"), 1, 0)
-         ,shotgun = ifelse(str_detect(weapon_type, "shotgun"), 1, 0)
-  ) %>% 
-  select('date','location', 'state', 'site', 'fatalities', 'injured', 'total_victims', 
-         'handgun', 'rifle', 'revolver', 'shotgun', 'weapon_type', 'age_of_shooter',
-         'mental_health_issues', 'legal_weapons', 'race', 'gender', 'latitude', 'longitude', 'summary')
+         , site = fct_recode(location.1
+                            , "Workplace" = "\nWorkplace"
+                            , "Other" = "Other\n")
+         , race = gsub(" ", "", race, fixed = TRUE) # eliminate blank spaces 
+         , race = fct_recode(race
+                            , "unclear" = "-"
+                            , "Black" = "black"
+                            , "White" = "white")
+         , state = word(location, -1)
+         , mental_health_issues = gsub(" ", "", prior_signs_mental_health_issues, fixed = TRUE) # eliminate blank spaces 
+         , mental_health_issues = fct_recode(mental_health_issues
+                                            , "Unclear" = "-"
+                                            , "Yes" ="yes" 
+                                            , "TBD" = "Unknown")
+         , legal_weapons = word(weapons_obtained_legally, 1)
+         , legal_weapons =  fct_recode(legal_weapons 
+                                      , "Yes" = "\nYes"
+                                      , "Unknown" = "-"
+                                      , "Unknown" = "TBD"
+                                      , "Unknown" = "Kelley")
+         , gender = fct_recode(gender
+                              , "M" = "Male" 
+                              , "F" = "Female"
+                              , "Other" = "-"
+                              , "M & F" = "Male & Female")
+         , age_of_shooter = as.numeric(age_of_shooter)
+         , age_of_shooter = ifelse(age_of_shooter < 10, age_of_shooter + 10, age_of_shooter )
+         , weapon_type = fct_recode(weapon_type
+                                   , "handgun" = "Handgun" 
+                                   , "shotgun" = "Shotgun" 
+                                   , "rifle" = "Rifle")
+         , handgun = ifelse(str_detect(weapon_type, "handgun"), 1, 0)
+         , rifle = ifelse(str_detect(weapon_type, "rifle"), 1, 0)
+         , revolver = ifelse(str_detect(weapon_type, "revolver"), 1, 0)
+         , shotgun = ifelse(str_detect(weapon_type, "shotgun"), 1, 0)) %>% 
+  select('date','location', 'state', 'site', 'fatalities', 'injured', 'total_victims'
+         , 'handgun', 'rifle', 'revolver', 'shotgun', 'weapon_type', 'age_of_shooter'
+         , 'mental_health_issues', 'legal_weapons', 'race', 'gender', 'latitude', 'longitude', 'summary')
 
-# about the data 
+#---# about the data #---#
 text_about <- "The FBI and leading criminologists defined a mass shooting as 
                a single attack in a public place in which four or more victims were killed. 
                
@@ -68,30 +71,30 @@ text_about <- "The FBI and leading criminologists defined a mass shooting as
                expanded numerous times to remain current."
 
 text_learn_more <- "Visit https://www.motherjones.com/politics/2012/12/mass-shootings-mother-jones-full-data/ 
-                    to obtein the whole dataset and aditional information"
+                    to download the whole dataset and get aditional information"
 
 theme_mass_shoot <- function() {
+  
   theme_bw() + 
-    theme(legend.position = 'none',
-      text = element_text(family = "Bookman", color = "gray25"),
-      plot.subtitle = element_text(size = 12),
-      plot.caption = element_text(color = "gray30"),
-      plot.margin = unit(c(1, 1, 1, 1), units = "mm")
-    )
+    theme(legend.position = 'none'
+      , text = element_text(family = "Bookman", color = "gray25")
+      , plot.subtitle = element_text(size = 14)
+      , plot.caption = element_text(color = "gray30")
+      , plot.margin = unit(c(1, 1, 1, 1), units = "mm"))
+  
 }
 
-shinyServer(function(input, output) {
+shinyServer(
   
+  function(input, output){
+    
   #---# about #---#
-  observeEvent(input$show_about,{
-    showModal(modalDialog(text_about, title = 'About')) 
-    })
+  observeEvent(input$show_about,{showModal(modalDialog(text_about, title = 'About'))})
   
   #---# global filter #---#
   rval_mass_shootings <- reactive({
     
     # Filter mass_shootings on number of fatalities and date range.
-    
     mass_shootings_fil <- mass_shootings %>%
       filter(between(date, input$date_range[1], input$date_range[2]) & fatalities >= input$nb_fatalities)
     
@@ -136,14 +139,11 @@ shinyServer(function(input, output) {
       addTiles() %>%
       setView( -98.58, 39.82, zoom = 4.25) %>% 
       addTiles() %>% 
-      addCircleMarkers(
-        # Add parameters popup and radius and map them to the summary and fatalities columns
-        popup  = ~ summary,
-        radius = ~ fatalities,
-        fillColor = 'red'
-        , color = 'red'
-        , weight = 1
-      )
+      addCircleMarkers(popup  = ~ summary  
+                       , radius = ~ fatalities
+                       , fillColor = 'red'
+                       , color = 'red'
+                       , weight = 1)
   })
   
   #----------------------#
@@ -231,7 +231,6 @@ shinyServer(function(input, output) {
   })
   
   output$mental_health_info <- renderValueBox({ 
-    
     valueBox( paste(mental_health_summ()[1,]$freq, '%')
               , strong("of the attackers were mentally ill.")
               , icon = icon("brain", lib = 'font-awesome'), color = "purple") 
@@ -259,16 +258,13 @@ shinyServer(function(input, output) {
       coord_flip() + 
       labs(x="", y="%") + 
       theme_mass_shoot()
-    
-    
+
   })
 
   output$race_shooters_info <- renderValueBox({ 
-    
     valueBox( paste(race_summ()[1,]$freq, '%')
               , strong("of the attackers were white male.")
               , icon = icon("mars"), color = "teal") 
-    
     })
   
   #---# age of the shooter #---#   
@@ -285,11 +281,9 @@ shinyServer(function(input, output) {
   })
   
   output$median_age_info <- renderValueBox({ 
-    
     valueBox( paste(median(rval_mass_shootings()$age_of_shooter))
               , strong('is the median age of the shooters.')
               , icon = icon("child"), color = "purple") 
-    
     })
   
   #--------------------#
@@ -322,12 +316,9 @@ shinyServer(function(input, output) {
   })
   
   output$legal_weapon_info <- renderValueBox({
-    
     valueBox( paste(ind_legal_weapon()[1,]$freq, '%')
               , strong("of the weapons were obteined legally.")
               , icon = icon("balance-scale"), color = "purple") 
-    
-    
   })
   
   #---# type weapon #---#  
@@ -336,10 +327,10 @@ shinyServer(function(input, output) {
     
     rval_mass_shootings() %>% 
       select(handgun, rifle, revolver, shotgun) %>% 
-      summarise(handgun = sum(handgun), 
-                rifle = sum(rifle),
-                revolver = sum(revolver),
-                shotgun = sum(shotgun)) %>% 
+      summarise(handgun = sum(handgun)
+                , rifle = sum(rifle)
+                , revolver = sum(revolver)
+                , shotgun = sum(shotgun)) %>% 
       pivot_longer(everything())  %>% 
       mutate(freq = round((value/nrow(rval_mass_shootings()))*100, 2)) %>% 
       arrange(desc(freq)) %>% 
@@ -360,12 +351,9 @@ shinyServer(function(input, output) {
   })
   
   output$type_weapon_info <- renderValueBox({
-    
     valueBox( paste(weapons_subset()[1,]$freq, '%')
               , strong("of the attacks were committed at least with a handgun.")
               , icon = icon("hand-paper"), color = "teal") 
-    
-    
   })
   
   #---# number of weapons #---#  
@@ -399,11 +387,9 @@ shinyServer(function(input, output) {
   })
   
   output$several_types_info <- renderValueBox({
-    
     valueBox( paste(sum(numb_type_weap()[numb_type_weap()$num_type_gun!=1,]$freq), '%')
               , strong("of the shotters possed more than one type of gun.")
               , icon = icon("bomb"), color = "purple") 
-    
   })
   
   #------------------#
@@ -412,25 +398,29 @@ shinyServer(function(input, output) {
   
   output$table <-  DT::renderDT({
   
-    datatable(rval_mass_shootings() %>%  select(date, state, site, fatalities, injured, weapon_type, age_of_shooter,
-                                                mental_health_issues, legal_weapons, race, gender)
-              ,class = 'cell-border stripe'
-              ,rownames = FALSE
-              ,caption = htmltools::tags$caption(style = 'caption-side: bottom; text-align: center;',
-              'Table 1: ', htmltools::em('Information filtered by number of fatalities and date'))
+    datatable(
+      rval_mass_shootings() %>%  
+                select(date, state, site, fatalities, injured, weapon_type
+                       , age_of_shooter,mental_health_issues, legal_weapons
+                       , race, gender)
+              , class = 'cell-border stripe'
+              , rownames = FALSE
+              , caption = htmltools::tags$caption(style = 'caption-side: bottom; text-align: center;'
+              , 'Table 1: ', htmltools::em('Information filtered by number of fatalities and date'))
     )
     
   })
   
-  observeEvent(input$learn_more,{
-    showModal(modalDialog(text_learn_more, title = 'About the data')) })
+  observeEvent(input$learn_more
+               , {showModal(modalDialog(text_learn_more, title = 'About the data')) })
   
   output$download_data <- downloadHandler(
-    filename <- "mass_shootings.csv",
-    content <- function(file){
-      rval_mass_shootings() %>%  select(date, state, site, fatalities, injured, weapon_type, age_of_shooter,
-                                        mental_health_issues, legal_weapons, race, gender)
+    filename <- "mass_shootings.csv"
+    , content <- function(file){
+      rval_mass_shootings() %>% 
+        select(date, state, site, fatalities
+               , injured, weapon_type, age_of_shooter
+               , mental_health_issues, legal_weapons, race, gender)
     }
   )
-  
 })
